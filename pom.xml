@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.nicky</groupId>
+    <artifactId>id-generator-spring-boot-starter</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>lombok-enchance</module>
+        <module>id-service</module>
+    </modules>
+    <packaging>jar</packaging>
+    <name>id-generator-spring-boot-starter</name>
+    <url>https://nicky-chen.github.io</url>
+    <inceptionYear>2019</inceptionYear>
+
+    <contributors>
+        <contributor>
+            <name>nicky_chin</name>
+            <url>https://nicky-chen.github.io</url>
+            <email>shuilianpiying@163.com</email>
+        </contributor>
+    </contributors>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <boot.version>1.5.1.RELEASE</boot.version>
+    </properties>
+</project>
