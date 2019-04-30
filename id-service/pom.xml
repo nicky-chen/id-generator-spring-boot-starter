@@ -5,10 +5,11 @@
     <parent>
         <artifactId>id-generator-spring-boot-starter</artifactId>
         <groupId>com.nicky</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
+    <name>id-service</name>
+    <version>0.0.1</version>
     <artifactId>id-service</artifactId>
 
     <properties>
@@ -28,6 +29,12 @@
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-recipes</artifactId>
             <version>4.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.nicky</groupId>
+            <artifactId>lombok-enchance</artifactId>
+            <version>1.0.0</version>
         </dependency>
 
         <dependency>

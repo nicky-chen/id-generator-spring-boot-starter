@@ -6,13 +6,14 @@
 
     <groupId>com.nicky</groupId>
     <artifactId>id-generator-spring-boot-starter</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <modules>
-        <module>lombok-enchance</module>
+        <!--<module>lombok-enchance</module>-->
         <module>id-service</module>
     </modules>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
     <name>id-generator-spring-boot-starter</name>
+
     <url>https://nicky-chen.github.io</url>
     <inceptionYear>2019</inceptionYear>
 
