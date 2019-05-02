@@ -6,11 +6,13 @@
  */
 package com.nicky.lombok.config;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
@@ -19,6 +21,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 
+import com.google.auto.service.AutoService;
 import com.nicky.lombok.annotation.Getter;
 import com.sun.source.tree.Tree;
 import com.sun.tools.javac.api.JavacTrees;
@@ -35,12 +38,12 @@ import com.sun.tools.javac.util.Names;
 
 /**
  * @author nicky_chin
- * <href = "https://blog.mythsman.com/2017/12/19/1/"></href>
+ * @description:
  * @date: 2019/4/30 上午9:45
  * @since JDK 1.8
+ * <href = "https://blog.mythsman.com/2017/12/19/1/"></href>
  */
-
-@SupportedAnnotationTypes("com.nicky.lombok.annotation.Getter")
+@AutoService(Processor.class)
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class GetterProcessor extends AbstractProcessor {
 
@@ -57,6 +60,13 @@ public class GetterProcessor extends AbstractProcessor {
         Context context = ((JavacProcessingEnvironment)processingEnv).getContext();
         this.treeMaker = TreeMaker.instance(context);
         this.names = Names.instance(context);
+    }
+
+    @Override
+    public Set<String> getSupportedAnnotationTypes() {
+        Set<String> set = new HashSet<>();
+        set.add(Getter.class.getCanonicalName());
+        return set;
     }
 
     @Override
