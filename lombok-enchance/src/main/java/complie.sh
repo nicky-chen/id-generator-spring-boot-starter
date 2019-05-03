@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# AST语法参考 https://blog.csdn.net/a_zhenzhen/article/details/86065063#JCTree%E7%9A%84%E4%BB%8B%E7%BB%8D"
+# 用法参考 https://blog.mythsman.com/2017/12/19/1/
+
 #创建保存class文件的文件夹
 if [ -d classes ]; then
     rm -rf classes;

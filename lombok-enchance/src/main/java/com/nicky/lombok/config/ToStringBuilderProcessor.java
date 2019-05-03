@@ -44,8 +44,7 @@ import com.sun.tools.javac.util.Names;
 
 /**
  * @author nicky_chin
- * @description:toStringBuilder校验器 AST语法参考 <href = "https://blog.csdn.net/a_zhenzhen/article/details/86065063#JCTree%E7%9A%84%E4%BB%8B%E7%BB%8D"/>
- * 用法参考<href = "https://blog.mythsman.com/2017/12/19/1/"></href>
+ * @description:toStringBuilder校验器
  * @date: 2019/4/21 下午9:25
  * @since JDK 1.8
  */
@@ -91,6 +90,7 @@ public class ToStringBuilderProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         Set<? extends Element> annotation = roundEnv.getElementsAnnotatedWith(ToStringBuilder.class);
         annotation.stream().map(element -> trees.getTree(element)).forEach(tree -> tree.accept(new TreeTranslator() {
+
             @Override
             public void visitClassDef(JCClassDecl jcClass) {
                 //过滤属性
