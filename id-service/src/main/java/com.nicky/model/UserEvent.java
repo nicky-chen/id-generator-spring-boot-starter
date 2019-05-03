@@ -7,7 +7,7 @@
 package com.nicky.model;
 
 import com.nicky.id.router.AbstractEvent;
-import com.nicky.model.adapter.AdapterFactory;
+import com.nicky.lombok.adapter.AdapterFactory;
 import com.vip.vjtools.vjkit.base.annotation.NotNull;
 
 import javassist.ClassPool;
@@ -27,25 +27,7 @@ import lombok.Setter;
 @Setter
 public class UserEvent extends AbstractEvent<String, String> {
 
-    public static void main(String[] args) {
-        try {
-            CtClass ctClass = ClassPool.getDefault().getCtClass("com.nicky.model.StudentS");
-            CtMethod toString = ctClass.getDeclaredMethod("say");
-            toString.insertBefore("System.out.println(\"start!!!\");");
-            CtMethod string = ctClass.getDeclaredMethod("toString");
-            ctClass.removeMethod(string);
-            CtMethod make =
-                CtNewMethod.make("  public String toString() {\n" + "        return \"aa\"; \n" + "    }", ctClass);
-            ctClass.addMethod(make);
-            Class<?> aClass = ctClass.toClass();
 
-        } catch (Exception e) {
-
-        }
-        new StudentS().say();
-        String string = new StudentS().toString();
-        System.out.println(string);
-    }
 
     private String user;
 
