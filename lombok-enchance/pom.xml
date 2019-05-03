@@ -6,7 +6,7 @@
     <groupId>com.nicky</groupId>
     <artifactId>lombok-enchance</artifactId>
     <name>lombok-enchance</name>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -40,6 +40,13 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>21.0</version>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.8.1</version>
             <optional>true</optional>
         </dependency>
 
