@@ -26,6 +26,7 @@ import javax.tools.Diagnostic;
 
 import com.google.auto.service.AutoService;
 import com.google.common.base.CaseFormat;
+import com.google.common.base.Throwables;
 import com.nicky.lombok.annotation.ToStringBuilder;
 import com.sun.source.tree.Tree;
 import com.sun.tools.javac.api.JavacTrees;
@@ -106,7 +107,7 @@ public class ToStringBuilderProcessor extends AbstractProcessor {
                         //增加set方法
                         jcClass.defs = jcClass.defs.prepend(generateSetterMethod(jcVariable));
                     } catch (Exception e) {
-                        messager.printMessage(Diagnostic.Kind.ERROR, e.getLocalizedMessage());
+                        messager.printMessage(Diagnostic.Kind.ERROR, Throwables.getStackTraceAsString(e));
                     }
                 });
                 //增加toString方法
