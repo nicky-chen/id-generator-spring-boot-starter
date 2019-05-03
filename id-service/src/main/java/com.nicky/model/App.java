@@ -6,6 +6,7 @@
  */
 package com.nicky.model;
 
+import com.google.common.base.CaseFormat;
 import com.nicky.lombok.annotation.ToStringBuilder;
 
 /**
