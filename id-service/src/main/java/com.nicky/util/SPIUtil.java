@@ -7,8 +7,8 @@
 package com.nicky.util;
 
 import com.google.common.base.Throwables;
+import com.nicky.model.LoggerEnhancer;
 import com.nicky.model.ServiceException;
-import com.nicky.model.adapter.LoggerEnhancer;
 import com.nicky.spi.Injector;
 
 /**

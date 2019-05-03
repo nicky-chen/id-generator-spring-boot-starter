@@ -6,6 +6,7 @@
  */
 package com.nicky.model;
 
+import com.nicky.lombok.annotation.ToStringBuilder;
 
 /**
  * @author nicky_chin
@@ -13,11 +14,14 @@ package com.nicky.model;
  * @date: 2019/4/30 上午9:50
  * @since JDK 1.8
  */
+@ToStringBuilder
 public class App {
 
     private String value;
 
     private String value2;
+
+    private int age;
 
     public App(String value) {
         this.value = value;
@@ -25,6 +29,8 @@ public class App {
 
     public static void main(String[] args) {
         App app = new App("it works");
+        app.age = 11;
+        System.out.println(app.toString());
         //System.out.println(app.getValue());
     }
 }

@@ -1,4 +1,4 @@
-package com.nicky.model.adapter;
+package com.nicky.lombok.adapter;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -9,12 +9,13 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  */
 public final class AdapterFactory {
 
+
     public static String builderStringAdapter(int capacity) {
         return new StringAdapter(capacity).toString();
     }
 
-    public static String builderStyleAdapter(Object t, ToStringStyle style) {
-        return new StyleAdapter(t, style).toString();
+    public static String builderStyleAdapter(Object t) {
+        return new StyleAdapter(t, ToStringStyle.JSON_STYLE).toString();
     }
 
     private static class StringAdapter implements AdapteeTarget {

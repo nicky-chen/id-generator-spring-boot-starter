@@ -5,7 +5,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import com.nicky.model.adapter.LoggerEnhancer;
+import com.nicky.model.LoggerEnhancer;
 
 /**
  * 描述 : spring的上下文工具

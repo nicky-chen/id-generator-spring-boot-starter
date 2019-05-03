@@ -1,4 +1,4 @@
-package com.nicky.model.adapter;
+package com.nicky.lombok.adapter;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;

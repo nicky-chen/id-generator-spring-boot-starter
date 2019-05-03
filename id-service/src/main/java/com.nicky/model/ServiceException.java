@@ -31,8 +31,5 @@ public class ServiceException extends RuntimeException {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 
-    public static void main(String[] args) {
-        String string = new StudentS().toString();
-        System.out.println(string);
-    }
+
 }

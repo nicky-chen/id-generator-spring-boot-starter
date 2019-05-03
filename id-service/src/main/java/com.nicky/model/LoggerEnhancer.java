@@ -4,7 +4,7 @@
  * Copyright (c) 2019, xiaoyujiaoyu technology All Rights Reserved.
  *
  */
-package com.nicky.model.adapter;
+package com.nicky.model;
 
 import java.util.function.Supplier;
 
