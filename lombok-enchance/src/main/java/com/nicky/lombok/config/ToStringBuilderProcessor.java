@@ -26,7 +26,6 @@ import javax.tools.Diagnostic;
 
 import com.google.auto.service.AutoService;
 import com.google.common.base.CaseFormat;
-import com.google.common.base.Throwables;
 import com.nicky.lombok.annotation.ToStringBuilder;
 import com.sun.source.tree.Tree;
 import com.sun.tools.javac.api.JavacTrees;
@@ -109,14 +108,14 @@ public class ToStringBuilderProcessor extends AbstractProcessor {
                 //处理变量
                 treeMap.forEach((k, jcVariable) -> {
                     messager.printMessage(Diagnostic.Kind.NOTE, String.format("fields:%s", k));
-                    try {
-                        //增加get方法
-                        jcClass.defs = jcClass.defs.prepend(generateGetterMethod(jcVariable));
-                        //增加set方法
-                        jcClass.defs = jcClass.defs.prepend(generateSetterMethod(jcVariable));
-                    } catch (Exception e) {
-                        messager.printMessage(Diagnostic.Kind.ERROR, Throwables.getStackTraceAsString(e));
-                    }
+//                    try {
+//                        //增加get方法
+//                        jcClass.defs = jcClass.defs.prepend(generateGetterMethod(jcVariable));
+//                        //增加set方法
+//                        jcClass.defs = jcClass.defs.prepend(generateSetterMethod(jcVariable));
+//                    } catch (Exception e) {
+//                        messager.printMessage(Diagnostic.Kind.ERROR, Throwables.getStackTraceAsString(e));
+//                    }
                 });
                 //增加toString方法
                 ToStringBuilder annotation = element.getAnnotation(ToStringBuilder.class);
