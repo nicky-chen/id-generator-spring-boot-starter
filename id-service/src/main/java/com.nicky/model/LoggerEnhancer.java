@@ -38,7 +38,7 @@ public class LoggerEnhancer implements Logger {
 
     public void info(final Supplier<String> messageSupplier) {
         if (isInfoEnabled()) {
-            info(messageSupplier.get());
+            logger.info(messageSupplier.get());
         }
     }
 
