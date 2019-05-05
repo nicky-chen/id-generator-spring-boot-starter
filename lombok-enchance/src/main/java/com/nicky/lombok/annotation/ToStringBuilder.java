@@ -12,8 +12,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.nicky.lombok.StringStyle;
+
 @Documented
 @Retention(RetentionPolicy.SOURCE)
 @Target({ElementType.TYPE})
 public @interface ToStringBuilder {
+
+    /**
+     * 返回toString格式
+     * @return
+     */
+    StringStyle toStringStyle() default StringStyle.JSON_STYLE;
 }

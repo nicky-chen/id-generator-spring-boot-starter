@@ -14,8 +14,8 @@ public final class AdapterFactory {
         return new StringAdapter(capacity).toString();
     }
 
-    public static String builderStyleAdapter(Object t) {
-        return new StyleAdapter(t, ToStringStyle.JSON_STYLE).toString();
+    public static String builderStyleAdapter(Object t, ToStringStyle stringStyle) {
+        return new StyleAdapter(t, stringStyle).toString();
     }
 
     private static class StringAdapter implements AdapteeTarget {

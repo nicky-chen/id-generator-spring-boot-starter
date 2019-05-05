@@ -33,7 +33,15 @@ import com.sun.tools.javac.api.JavacTrees;
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.processing.JavacProcessingEnvironment;
-import com.sun.tools.javac.tree.JCTree.*;
+import com.sun.tools.javac.tree.JCTree.JCBlock;
+import com.sun.tools.javac.tree.JCTree.JCClassDecl;
+import com.sun.tools.javac.tree.JCTree.JCExpression;
+import com.sun.tools.javac.tree.JCTree.JCExpressionStatement;
+import com.sun.tools.javac.tree.JCTree.JCMethodDecl;
+import com.sun.tools.javac.tree.JCTree.JCModifiers;
+import com.sun.tools.javac.tree.JCTree.JCStatement;
+import com.sun.tools.javac.tree.JCTree.JCTypeParameter;
+import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
 import com.sun.tools.javac.tree.TreeMaker;
 import com.sun.tools.javac.tree.TreeTranslator;
 import com.sun.tools.javac.util.Context;
@@ -64,32 +72,32 @@ public class ToStringBuilderProcessor extends AbstractProcessor {
     private TreeMaker treeMaker;
 
     /**
-     * 标识符
-     */
-    private Names names;
-
-    /**
      * 日志处理
      */
     private Messager messager;
+
+    /**
+     * 标识符
+     */
+    private Names names;
 
     private Filer filer;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
-        messager = processingEnvironment.getMessager();
-        filer = processingEnvironment.getFiler();
         this.trees = JavacTrees.instance(processingEnv);
         Context context = ((JavacProcessingEnvironment)processingEnv).getContext();
         this.treeMaker = TreeMaker.instance(context);
+        messager = processingEnvironment.getMessager();
         this.names = Names.instance(context);
+        filer = processingEnvironment.getFiler();
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        Set<? extends Element> annotation = roundEnv.getElementsAnnotatedWith(ToStringBuilder.class);
-        annotation.stream().map(element -> trees.getTree(element)).forEach(tree -> tree.accept(new TreeTranslator() {
+        Set<? extends Element> annotationSet = roundEnv.getElementsAnnotatedWith(ToStringBuilder.class);
+        annotationSet.forEach(element -> trees.getTree(element).accept(new TreeTranslator() {
 
             @Override
             public void visitClassDef(JCClassDecl jcClass) {
@@ -111,7 +119,8 @@ public class ToStringBuilderProcessor extends AbstractProcessor {
                     }
                 });
                 //增加toString方法
-                jcClass.defs = jcClass.defs.prepend(generateToStringBuilderMethod());
+                ToStringBuilder annotation = element.getAnnotation(ToStringBuilder.class);
+                jcClass.defs = jcClass.defs.prepend(generateToStringBuilderMethod(annotation));
                 super.visitClassDef(jcClass);
             }
 
@@ -174,7 +183,7 @@ public class ToStringBuilderProcessor extends AbstractProcessor {
      *
      * @return
      */
-    private JCMethodDecl generateToStringBuilderMethod() {
+    private JCMethodDecl generateToStringBuilderMethod(ToStringBuilder annotation) {
 
         //修改方法级别
         JCModifiers modifiers = treeMaker.Modifiers(Flags.PUBLIC);
@@ -183,10 +192,14 @@ public class ToStringBuilderProcessor extends AbstractProcessor {
         Name methodName = getNameFromString("toString");
 
         //设置调用方法函数类型和调用函数
-        JCExpressionStatement statement = treeMaker.Exec(treeMaker.Apply(List.of(memberAccess("java.lang.Object")),
+        JCExpressionStatement statement = treeMaker.Exec(treeMaker.Apply(
+            List.of(memberAccess("java.lang.Object"), memberAccess("org.apache.commons.lang3.builder.ToStringStyle")),
             memberAccess("com.nicky.lombok.adapter.AdapterFactory.builderStyleAdapter"),
-            List.of(treeMaker.Ident(getNameFromString("this")))));
+            List.of(treeMaker.Ident(getNameFromString("this")),
+                memberAccess(annotation.toStringStyle().getToStringStyle()))));
+
         ListBuffer<JCStatement> jcStatements = new ListBuffer<>();
+
         jcStatements.append(treeMaker.Return(statement.getExpression()));
         //设置方法体
         JCBlock jcBlock = treeMaker.Block(0, jcStatements.toList());
