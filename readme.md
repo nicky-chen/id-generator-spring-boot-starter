@@ -2,7 +2,6 @@
  - 本地缓存号码段 状态机
  - 状态监听基于eventbus
  - 获取远程服务基于eventbus 加 责任链
- - 注解校验器问题
  - 获取远程服务对象池
  - id服务 熔断 基于代理模式和resilience4j
  - 获取本地property文件处理
