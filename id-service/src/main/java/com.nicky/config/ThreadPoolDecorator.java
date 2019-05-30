@@ -8,7 +8,6 @@ package com.nicky.config;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -17,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.primitives.Ints;
+import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.nicky.model.LoggerEnhancer;
 
@@ -72,7 +72,7 @@ public class ThreadPoolDecorator extends ThreadPoolExecutor {
         return new ThreadPoolDecorator(executor, poolName);
     }
 
-    public ExecutorService toListeningExecutor() {
+    public ListeningExecutorService toListeningExecutor() {
         return MoreExecutors.listeningDecorator(this);
     }
 
