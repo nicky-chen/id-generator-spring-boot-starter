@@ -40,9 +40,10 @@ public class ExecutorConfig {
         ThreadPoolExecutor executor = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(),
             Runtime.getRuntime().availableProcessors() * 2, 60L, TimeUnit.SECONDS,
             new ArrayBlockingQueue<>(SIGN_UP_EXECUTOR_QUEUE_SIZE),
-            new ThreadFactoryBuilder().setNameFormat("SignUpExecutor-[%d]").build(),
+            new ThreadFactoryBuilder().setNameFormat("eventExecutor-[%d]").build(),
             // 这里队列满时，由调用线程执行
-            new AbortPolicyWithReport("sfsdf"));
-        return ThreadPoolDecorator.warp(executor, "eventExecutor");
+            new AbortPolicyWithReport("event-thread"));
+        return ThreadPoolDecorator.warp(executor, 120L).poolName("eventExecutor")
+            .waitForTasksToCompleteOnShutdown(true);
     }
 }

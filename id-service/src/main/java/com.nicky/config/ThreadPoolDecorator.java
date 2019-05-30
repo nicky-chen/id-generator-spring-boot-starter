@@ -6,6 +6,7 @@
  */
 package com.nicky.config;
 
+import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadFactory;
@@ -22,7 +23,6 @@ import com.nicky.model.LoggerEnhancer;
 
 import jodd.util.StringPool;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * @author nicky_chin
@@ -31,14 +31,11 @@ import lombok.Setter;
  * @since JDK 1.8
  */
 @Getter
-@Setter
 public class ThreadPoolDecorator extends ThreadPoolExecutor {
 
     private static final LoggerEnhancer LOGGER = LoggerEnhancer.getLogger(ThreadPoolDecorator.class);
 
     private ThreadPoolExecutor executor;
-
-    private long awaitTerminationSeconds;
 
     private boolean waitForTasksToCompleteOnShutdown;
 
@@ -46,10 +43,9 @@ public class ThreadPoolDecorator extends ThreadPoolExecutor {
 
     private ConcurrentHashMap<String, Stopwatch> timer;
 
-    private ThreadPoolDecorator(ThreadPoolExecutor executor, String poolName) {
+    private ThreadPoolDecorator(ThreadPoolExecutor executor, long awaitTerminationSeconds) {
         this(executor.getCorePoolSize(), executor.getMaximumPoolSize(), executor.getKeepAliveTime(TimeUnit.SECONDS),
             TimeUnit.SECONDS, executor.getQueue(), executor.getThreadFactory());
-        this.poolName = StringUtils.defaultString(poolName, StringPool.EMPTY);
         this.executor = executor;
         int expectedSize = executor.getMaximumPoolSize();
         if (expectedSize < 3) {
@@ -59,8 +55,7 @@ public class ThreadPoolDecorator extends ThreadPoolExecutor {
             expectedSize = (int)((float)expectedSize / 0.75F + 1.0F);
         }
         this.timer = new ConcurrentHashMap<>(expectedSize);
-        MoreExecutors.addDelayedShutdownHook(executor, 0, TimeUnit.SECONDS);
-
+        MoreExecutors.addDelayedShutdownHook(executor, awaitTerminationSeconds, TimeUnit.SECONDS);
     }
 
     private ThreadPoolDecorator(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit,
@@ -68,8 +63,18 @@ public class ThreadPoolDecorator extends ThreadPoolExecutor {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory);
     }
 
-    public static ThreadPoolDecorator warp(ThreadPoolExecutor executor, String poolName) {
-        return new ThreadPoolDecorator(executor, poolName);
+    public static ThreadPoolDecorator warp(ThreadPoolExecutor executor, long awaitTerminationSeconds) {
+        return new ThreadPoolDecorator(executor, awaitTerminationSeconds);
+    }
+
+    public ThreadPoolDecorator poolName(String poolName) {
+        this.poolName = StringUtils.defaultString(poolName, StringPool.EMPTY);
+        return this;
+    }
+
+    public ThreadPoolDecorator waitForTasksToCompleteOnShutdown(boolean waitForTasksToCompleteOnShutdown) {
+        this.waitForTasksToCompleteOnShutdown = waitForTasksToCompleteOnShutdown;
+        return this;
     }
 
     public ListeningExecutorService toListeningExecutor() {
@@ -80,7 +85,7 @@ public class ThreadPoolDecorator extends ThreadPoolExecutor {
      * 任务执行之前,记录任务开始时间
      */
     @Override
-    protected void beforeExecute(Thread t, Runnable r) {
+    public void beforeExecute(Thread t, Runnable r) {
         // 统计已执行任务、正在执行任务、未执行任务数量
         LOGGER.info(String
             .format("threadPool [%s] Going to execute. Executed tasks: %d, Running tasks: %d, Pending tasks: %d",
@@ -92,7 +97,7 @@ public class ThreadPoolDecorator extends ThreadPoolExecutor {
      * 任务执行之后,计算任务结束时间
      */
     @Override
-    protected void afterExecute(Runnable r, Throwable t) {
+    public void afterExecute(Runnable r, Throwable t) {
         Stopwatch stopwatch = timer.remove(String.valueOf(r.hashCode()));
         // 统计任务耗时、初始线程数、核心线程数、正在执行的任务数量、已完成任务数量、任务总数、队列里缓存的任务数量、池中存在的最大线程数、最大允许的线程数、线程空闲时间、线程池是否关闭、线程池是否终止
         LOGGER.info(String.format(this.poolName
@@ -101,6 +106,9 @@ public class ThreadPoolDecorator extends ThreadPoolExecutor {
             this.getCompletedTaskCount(), this.getTaskCount(), this.getQueue().size(), this.getLargestPoolSize(),
             this.getMaximumPoolSize(), this.getKeepAliveTime(TimeUnit.MILLISECONDS), this.isShutdown(),
             this.isTerminated()));
+        if (Objects.nonNull(t)) {
+            LOGGER.error(() -> "worker handle exception ", t);
+        }
         stopwatch.stop();
     }
 
@@ -109,33 +117,14 @@ public class ThreadPoolDecorator extends ThreadPoolExecutor {
      *
      * @see java.util.concurrent.ExecutorService#shutdown()
      * @see java.util.concurrent.ExecutorService#shutdownNow()
-     * @see #awaitTerminationIfNecessary()
      */
     @Override
     public void shutdown() {
         LOGGER.info(() -> String.format("Shutting down ExecutorService :%s ", poolName));
         if (this.waitForTasksToCompleteOnShutdown) {
-            this.executor.shutdown();
+            super.shutdown();
         } else {
-            this.executor.shutdownNow();
-        }
-        awaitTerminationIfNecessary();
-    }
-
-    /**
-     * Wait for the executor to terminate, according to the value of the
-     * {@link #setAwaitTerminationSeconds "awaitTerminationSeconds"} property.
-     */
-    private void awaitTerminationIfNecessary() {
-        if (this.awaitTerminationSeconds > 0) {
-            try {
-                if (!this.executor.awaitTermination(this.awaitTerminationSeconds, TimeUnit.SECONDS)) {
-                    LOGGER.info(() -> String.format("Timed out while waiting for executor %s to terminate", poolName));
-                }
-            } catch (InterruptedException ex) {
-                LOGGER.info(() -> String.format("Interrupted while waiting for executor  %s to terminate", poolName));
-                Thread.currentThread().interrupt();
-            }
+            super.shutdownNow();
         }
     }
 
