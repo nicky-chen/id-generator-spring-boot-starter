@@ -37,11 +37,12 @@ public class ExecutorConfig {
      */
     @Bean(name = "eventExecutor")
     public Executor getSignUpExecutor() {
-        return new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(),
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(),
             Runtime.getRuntime().availableProcessors() * 2, 60L, TimeUnit.SECONDS,
             new ArrayBlockingQueue<>(SIGN_UP_EXECUTOR_QUEUE_SIZE),
             new ThreadFactoryBuilder().setNameFormat("SignUpExecutor-[%d]").build(),
             // 这里队列满时，由调用线程执行
             new AbortPolicyWithReport("sfsdf"));
+        return ThreadPoolDecorator.warp(executor, "eventExecutor");
     }
 }
