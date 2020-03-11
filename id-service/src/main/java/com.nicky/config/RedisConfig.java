@@ -18,7 +18,7 @@ public class RedisConfig {
 
     //https://my.oschina.net/dengfuwei/blog/1604975
 
-    private String address = "redis://dev.jiayouxueba.cn:6379";
+    private String address = "redis://localhost:6379";
     private int connectionMinimumIdleSize = 10;
     private int idleConnectionTimeout = 10000;
     private int pingTimeout = 1000;
@@ -28,7 +28,7 @@ public class RedisConfig {
     private int retryInterval = 1500;
     private int reconnectionTimeout = 3000;
     private int failedAttempts = 3;
-    private String password = "Jyxbredis0808";
+    private String password = "0808";
     private int subscriptionsPerConnection = 5;
     private String clientName = "test";
     private int subscriptionConnectionMinimumIdleSize = 1;
